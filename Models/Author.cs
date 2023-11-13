@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
-        public List<Book>? Books { get; set; }
+        public ICollection<Book> Books { get; set; }
     }
 }

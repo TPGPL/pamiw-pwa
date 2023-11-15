@@ -29,7 +29,7 @@ else
             @foreach (var publisher in publishers)
             {
                 <tr>
-                    <td>@publisher.Id</td>
+                    <th scope="row">@publisher.Id</th>
                     <td>@publisher.Name</td>
                     <td>
                         <button class="btn btn-primary" @onclick="() => EditAction(publisher.Id)">Update</button>

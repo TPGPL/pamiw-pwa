@@ -1,0 +1,22 @@
+﻿@page "/publishers/create"
+@inject PublisherService service
+@inject NavigationManager manager
+
+@if (publisher is not null)
+{
+    <PublisherForm publisher="publisher" OnValidSubmit="HandleSubmit" />
+} else
+{
+    <p>How</p>
+}
+
+@code {
+    private Publisher publisher = new Publisher();
+
+    public async Task HandleSubmit()
+    {
+        await service.CreatePublisherAsync(publisher);
+
+        manager.NavigateTo("/publishers");
+    }
+}

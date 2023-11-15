@@ -1,0 +1,75 @@
+﻿@page "/publishers"
+@inject PublisherService service
+@inject NavigationManager navManager
+
+<PageTitle>PWA - Publishers</PageTitle>
+
+<h1>Publisher List</h1>
+
+@if (publishers is null)
+{
+    <p>Loading data...</p>
+}
+else if (!publishers.Any())
+{
+    <p>No data to show.</p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="CreateAction">Create new publisher</button>
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var publisher in publishers)
+            {
+                <tr>
+                    <td>@publisher.Id</td>
+                    <td>@publisher.Name</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditAction(publisher.Id)">Update</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteAction(publisher.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Publisher>? publishers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        publishers = await GetPublishersAsync();
+    }
+
+    protected async Task<List<Publisher>?> GetPublishersAsync()
+    {
+        var response = await service.GetPublishersAsync();
+
+        return (response is not null && response.Success) ? response.Data : null;
+    }
+
+    protected void CreateAction()
+    {
+        navManager.NavigateTo($"/publishers/create");
+    }
+
+    protected void EditAction(int id)
+    {
+        navManager.NavigateTo($"/publishers/{id}");
+    }
+
+    protected async void DeleteAction(int id)
+    {
+        await service.DeletePublisherAsync(id);
+
+        publishers = await GetPublishersAsync();
+    }
+}

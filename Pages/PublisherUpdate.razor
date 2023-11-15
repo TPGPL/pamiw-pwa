@@ -1,0 +1,37 @@
+﻿@page "/publishers/{Id:int}"
+@inject PublisherService service
+@inject NavigationManager navManager
+
+<h3>Update publisher @Id</h3>
+
+@if (publisher is null)
+{
+    <p>Loading...</p>
+} else
+{
+    <PublisherForm publisher="publisher" OnValidSubmit="HandleSubmit" />
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Publisher? publisher;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await service.GetPublisherAsync(Id);
+
+        if (response is not null && response.Success)
+        {
+            publisher = response.Data;
+        }
+    }
+
+    public async Task HandleSubmit()
+    {
+        if (publisher is not null)
+            await service.UpdatePublisherAsync(Id, publisher);
+
+        navManager.NavigateTo("/publishers");
+    }
+}

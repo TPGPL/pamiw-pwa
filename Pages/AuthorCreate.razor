@@ -2,6 +2,8 @@
 @inject AuthorService service
 @inject NavigationManager manager
 
+<PageTitle>PWA - Create author</PageTitle>
+
 @if (author is not null)
 {
     <AuthorForm author="author" OnValidSubmit="HandleSubmit" />

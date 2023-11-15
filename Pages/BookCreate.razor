@@ -2,6 +2,8 @@
 @inject BookService service
 @inject NavigationManager manager
 
+<PageTitle>PWA - Create book</PageTitle>
+
 @if (book is not null)
 {
     <BookForm book="book" OnValidSubmit="HandleSubmit" />

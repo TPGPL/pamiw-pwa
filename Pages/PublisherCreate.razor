@@ -2,6 +2,8 @@
 @inject PublisherService service
 @inject NavigationManager manager
 
+<PageTitle>PWA - Create publisher</PageTitle>
+
 @if (publisher is not null)
 {
     <PublisherForm publisher="publisher" OnValidSubmit="HandleSubmit" />

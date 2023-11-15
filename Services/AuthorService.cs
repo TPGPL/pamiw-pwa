@@ -1,9 +1,10 @@
-﻿using pamiw_pwa.Models;
+﻿using Microsoft.AspNetCore.Cors;
+using pamiw_pwa.Models;
 using System.Net.Http.Json;
 
 namespace pamiw_pwa.Services;
 
-public class AuthorService
+public class AuthorService : IAuthorService
 {
     private readonly HttpClient _httpClient;
 
@@ -14,28 +15,38 @@ public class AuthorService
 
     public async Task<ServiceResponse<List<Author>>> GetAuthorsAsync()
     {
-        var response = await _httpClient.GetAsync("http://localhost:8081/authors");
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            return new ServiceResponse<List<Author>>
+            var response = await _httpClient.GetAsync("authors");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ServiceResponse<List<Author>>
+                {
+                    Success = false,
+                    Message = "HTTP Request failed"
+                };
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Author>>>()
+                ?? new ServiceResponse<List<Author>>() { Success = false, Message = "Failed to deserialize." };
+
+            result.Success = result.Success && result.Data is not null;
+
+            return result;
+        } catch (Exception ex)
+        {
+            return new ServiceResponse<List<Author>>()
             {
                 Success = false,
-                Message = "HTTP Request failed"
+                Message = ex.Message
             };
         }
-
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Author>>>()
-            ?? new ServiceResponse<List<Author>>() { Success = false, Message = "Failed to deserialize." };
-
-        result.Success = result.Success && result.Data is not null;
-
-        return result;
     }
 
     public async Task<ServiceResponse<Author>> GetAuthorAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"http://localhost:8081/authors/{id}");
+        var response = await _httpClient.GetAsync($"authors/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -56,7 +67,7 @@ public class AuthorService
 
     public async Task<ServiceResponse<Author>> UpdateAuthorAsync(int id, Author author)
     {
-        var response = await _httpClient.PutAsJsonAsync($"http://localhost:8081/authors/{id}", author);
+        var response = await _httpClient.PutAsJsonAsync($"authors/{id}", author);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
             ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
 
@@ -65,7 +76,7 @@ public class AuthorService
 
     public async Task<ServiceResponse<Author>> CreateAuthorAsync(Author author)
     {
-        var response = await _httpClient.PostAsJsonAsync($"http://localhost:8081/authors", author);
+        var response = await _httpClient.PostAsJsonAsync($"authors", author);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
             ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
 
@@ -74,7 +85,7 @@ public class AuthorService
 
     public async Task<ServiceResponse<Author>> DeleteAuthorAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"http://localhost:8081/authors/{id}");
+        var response = await _httpClient.DeleteAsync($"authors/{id}");
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
             ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
 

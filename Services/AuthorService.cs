@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Cors;
-using pamiw_pwa.Models;
+﻿using pamiw_pwa.Models;
 using System.Net.Http.Json;
 
 namespace pamiw_pwa.Services;
 
-public class AuthorService : IAuthorService
+public class AuthorService
 {
     private readonly HttpClient _httpClient;
 

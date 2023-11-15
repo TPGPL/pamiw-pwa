@@ -14,7 +14,7 @@ public class PublisherService
 
     public async Task<ServiceResponse<List<Publisher>>> GetPublishersAsync()
     {
-        var response = await _httpClient.GetAsync("http://localhost:8081/publishers");
+        var response = await _httpClient.GetAsync("publishers");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -35,7 +35,7 @@ public class PublisherService
 
     public async Task<ServiceResponse<Publisher>> GetPublisherAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"http://localhost:8081/publishers/{id}");
+        var response = await _httpClient.GetAsync($"publishers/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -56,7 +56,7 @@ public class PublisherService
 
     public async Task<ServiceResponse<Publisher>> UpdatePublisherAsync(int id, Publisher author)
     {
-        var response = await _httpClient.PutAsJsonAsync($"http://localhost:8081/publishers/{id}", author);
+        var response = await _httpClient.PutAsJsonAsync($"publishers/{id}", author);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
             ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
 
@@ -65,7 +65,7 @@ public class PublisherService
 
     public async Task<ServiceResponse<Publisher>> CreatePublisherAsync(Publisher author)
     {
-        var response = await _httpClient.PostAsJsonAsync($"http://localhost:8081/publishers", author);
+        var response = await _httpClient.PostAsJsonAsync($"publishers", author);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
             ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
 
@@ -74,7 +74,7 @@ public class PublisherService
 
     public async Task<ServiceResponse<Publisher>> DeletePublisherAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"http://localhost:8081/publishers/{id}");
+        var response = await _httpClient.DeleteAsync($"publishers/{id}");
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
             ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
 

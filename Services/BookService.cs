@@ -14,7 +14,7 @@ public class BookService
 
     public async Task<ServiceResponse<List<Book>>> GetBooksAsync()
     {
-        var response = await _httpClient.GetAsync("http://localhost:8081/books");
+        var response = await _httpClient.GetAsync("books");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -35,7 +35,7 @@ public class BookService
 
     public async Task<ServiceResponse<Book>> GetBookAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"http://localhost:8081/books/{id}");
+        var response = await _httpClient.GetAsync($"books/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -56,7 +56,7 @@ public class BookService
 
     public async Task<ServiceResponse<Book>> UpdateBookAsync(int id, Book Book)
     {
-        var response = await _httpClient.PutAsJsonAsync($"http://localhost:8081/books/{id}", Book);
+        var response = await _httpClient.PutAsJsonAsync($"books/{id}", Book);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Book>>()
             ?? new ServiceResponse<Book>() { Success = false, Message = "Failed to deserialize" };
 
@@ -65,7 +65,7 @@ public class BookService
 
     public async Task<ServiceResponse<Book>> CreateBookAsync(Book Book)
     {
-        var response = await _httpClient.PostAsJsonAsync($"http://localhost:8081/books", Book);
+        var response = await _httpClient.PostAsJsonAsync($"books", Book);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Book>>()
             ?? new ServiceResponse<Book>() { Success = false, Message = "Failed to deserialize" };
 
@@ -74,7 +74,7 @@ public class BookService
 
     public async Task<ServiceResponse<Book>> DeleteBookAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"http://localhost:8081/books/{id}");
+        var response = await _httpClient.DeleteAsync($"books/{id}");
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Book>>()
             ?? new ServiceResponse<Book>() { Success = false, Message = "Failed to deserialize" };
 

@@ -70,7 +70,7 @@ else
         navManager.NavigateTo($"/authors/{id}");
     }
 
-    protected async void DeleteAction(int id)
+    protected async Task DeleteAction(int id)
     {
         await service.DeleteAuthorAsync(id);
 

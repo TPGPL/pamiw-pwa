@@ -1,0 +1,85 @@
+﻿@page "/books"
+@inject BookService service
+@inject NavigationManager navManager
+
+<PageTitle>PWA - Books</PageTitle>
+
+<h1>Book List</h1>
+
+@if (books is null)
+{
+    <p>Loading data...</p>
+}
+else if (!books.Any())
+{
+    <p>No data to show.</p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="CreateAction">Create new book</button>
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author ID</th>
+                <th>Publisher ID</th>
+                <th>Page count</th>
+                <th>Release date</th>
+                <th>ISBN</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Id</td>
+                    <td>@book.Title</td>
+                    <td>@book.AuthorID</td>
+                    <td>@book.PublisherID</td>
+                    <td>@book.PageCount</td>
+                    <td>@book.ReleaseDate.ToShortDateString()</td>
+                    <td>@book.ISBN</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditAction(book.Id)">Update</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteAction(book.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Book>? books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await GetBooksAsync();
+    }
+
+    protected async Task<List<Book>?> GetBooksAsync()
+    {
+        var response = await service.GetBooksAsync();
+
+        return (response is not null && response.Success) ? response.Data : null;
+    }
+
+    protected void CreateAction()
+    {
+        navManager.NavigateTo($"/books/create");
+    }
+
+    protected void EditAction(int id)
+    {
+        navManager.NavigateTo($"/books/{id}");
+    }
+
+    protected async void DeleteAction(int id)
+    {
+        await service.DeleteBookAsync(id);
+
+        books = await GetBooksAsync();
+    }
+}

@@ -1,0 +1,22 @@
+﻿@page "/books/create"
+@inject BookService service
+@inject NavigationManager manager
+
+@if (book is not null)
+{
+    <BookForm book="book" OnValidSubmit="HandleSubmit" />
+} else
+{
+    <p>How</p>
+}
+
+@code {
+    private Book book = new Book();
+
+    public async Task HandleSubmit()
+    {
+        await service.CreateBookAsync(book);
+
+        manager.NavigateTo("/books");
+    }
+}

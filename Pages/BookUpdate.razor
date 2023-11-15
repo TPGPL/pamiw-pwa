@@ -1,0 +1,37 @@
+﻿@page "/books/{Id:int}"
+@inject BookService service
+@inject NavigationManager navManager
+
+<h3>Update book @Id</h3>
+
+@if (book is null)
+{
+    <p>Loading...</p>
+} else
+{
+    <BookForm book="book" OnValidSubmit="HandleSubmit" />
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Book? book;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await service.GetBookAsync(Id);
+
+        if (response is not null && response.Success)
+        {
+            book = response.Data;
+        }
+    }
+
+    public async Task HandleSubmit()
+    {
+        if (book is not null)
+            await service.UpdateBookAsync(Id, book);
+
+        navManager.NavigateTo("/books");
+    }
+}

@@ -1,0 +1,79 @@
+﻿@page "/authors"
+@inject AuthorService service
+@inject NavigationManager navManager
+
+<PageTitle>PWA - Authors</PageTitle>
+
+<h1>Author List</h1>
+
+@if (authors is null)
+{
+    <p>Loading data...</p>
+}
+else if (!authors.Any())
+{
+    <p>No data to show.</p>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="CreateAction">Create new author</button>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in authors)
+            {
+                <tr>
+                    <td>@author.Id</td>
+                    <td>@author.Name</td>
+                    <td>@author.Surname</td>
+                    <td>@author.Email</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditAction(author.Id)">Update</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteAction(author.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Author>? authors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authors = await GetAuthorsAsync();
+    }
+
+    protected async Task<List<Author>?> GetAuthorsAsync()
+    {
+        var response = await service.GetAuthorsAsync();
+
+        return (response is not null && response.Success) ? response.Data : null;
+    }
+
+    protected void CreateAction()
+    {
+        navManager.NavigateTo($"/authors/create");
+    }
+
+    protected void EditAction(int id)
+    {
+        navManager.NavigateTo($"/authors/{id}");
+    }
+
+    protected async void DeleteAction(int id)
+    {
+        await service.DeleteAuthorAsync(id);
+
+        authors = await GetAuthorsAsync();
+    }
+}

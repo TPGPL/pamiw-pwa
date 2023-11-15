@@ -1,9 +1,13 @@
-﻿namespace pamiw_pwa.Models
+﻿using System.Text.Json.Serialization;
+
+namespace pamiw_pwa.Models;
+
+public class ServiceResponse<T>
 {
-    public class ServiceResponse<T>
-    {
-        public T? Data { get; set; }
-        public bool Success { get; set; }
-        public string? Message { get; set; }
-    }
+    [JsonPropertyName("data")]
+    public T? Data { get; set; }
+    [JsonPropertyName("wasSuccessful")]
+    public bool Success { get; set; }
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
 }

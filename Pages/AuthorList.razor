@@ -43,10 +43,17 @@ else
             }
         </tbody>
     </table>
+
+    <button class="btn btn-primary" @onclick="PreviousPage">Prev</button>
+    <span>@currentPage</span>
+    <button class="btn btn-primary" @onclick="NextPage">Next</button>
 }
 
 @code {
     private List<Author>? authors;
+    private readonly int dataPerPage = 10;
+    private int currentPage = 1;
+    private int totalPages;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,7 +64,33 @@ else
     {
         var response = await service.GetAuthorsAsync();
 
-        return (response is not null && response.Success) ? response.Data : null;
+        if (response is null || !response.Success)
+        {
+            return null;
+        }
+
+        var data = response.Data;
+
+        if (data is null || !data.Any())
+        {
+            return data;
+        }
+
+        totalPages = (data.Count / dataPerPage) + 1;
+
+        if (data.Count % dataPerPage == 0)
+        {
+            totalPages--;
+        }
+
+        if (currentPage > totalPages)
+        {
+            currentPage--;
+        }
+
+        int dataToFetch = currentPage == totalPages && data.Count % dataPerPage != 0 ? data.Count % dataPerPage : dataPerPage;
+
+        return data.GetRange((currentPage - 1) * dataPerPage, dataToFetch);
     }
 
     protected void CreateAction()
@@ -75,5 +108,24 @@ else
         await service.DeleteAuthorAsync(id);
 
         authors = await GetAuthorsAsync();
+    }
+
+    protected async Task PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+
+            authors = await GetAuthorsAsync();
+        }
+    }
+    protected async Task NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+
+            authors = await GetAuthorsAsync();
+        }
     }
 }

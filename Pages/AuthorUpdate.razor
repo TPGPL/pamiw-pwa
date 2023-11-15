@@ -1,0 +1,37 @@
+﻿@page "/authors/{Id:int}"
+@inject AuthorService service
+@inject NavigationManager navManager
+
+<h3>Update author @Id</h3>
+
+@if (author is null)
+{
+    <p>Loading...</p>
+} else
+{
+    <AuthorForm author="author" OnValidSubmit="HandleSubmit" />
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Author? author;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await service.GetAuthorAsync(Id);
+
+        if (response is not null && response.Success)
+        {
+            author = response.Data;
+        }
+    }
+
+    public async Task HandleSubmit()
+    {
+        if (author is not null)
+            await service.UpdateAuthorAsync(Id, author);
+
+        navManager.NavigateTo("/authors");
+    }
+}

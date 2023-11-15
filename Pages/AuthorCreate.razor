@@ -1,0 +1,22 @@
+﻿@page "/authors/create"
+@inject AuthorService service
+@inject NavigationManager manager
+
+@if (author is not null)
+{
+    <AuthorForm author="author" OnValidSubmit="HandleSubmit" />
+} else
+{
+    <p>How</p>
+}
+
+@code {
+    private Author author = new Author();
+
+    public async Task HandleSubmit()
+    {
+        await service.CreateAuthorAsync(author);
+
+        manager.NavigateTo("/authors");
+    }
+}

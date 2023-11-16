@@ -8,18 +8,27 @@
 
 @if (author is not null)
 {
+    @if (message is not null)
+    {
+        <p>Error: @message</p>
+    }
+
     <AuthorForm author="author" OnValidSubmit="HandleSubmit" />
-} else
-{
-    <p>How</p>
 }
 
 @code {
     private Author author = new Author();
+    private String? message = null;
 
     public async Task HandleSubmit()
     {
-        await service.CreateAuthorAsync(author);
+        var response = await service.CreateAuthorAsync(author);
+
+        if (!response.Success)
+        {
+            message = response.Message;
+            return;
+        }
 
         manager.NavigateTo("/authors");
     }

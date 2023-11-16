@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 
 namespace pamiw_pwa.Services;
 
-public class BookService
+public class BookService : IBookService
 {
     private readonly HttpClient _httpClient;
 

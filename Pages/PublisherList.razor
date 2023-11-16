@@ -1,5 +1,5 @@
 ﻿@page "/publishers"
-@inject PublisherService service
+@inject IPublisherService service
 @inject NavigationManager navManager
 
 <PageTitle>PWA - Publishers</PageTitle>
@@ -39,7 +39,7 @@ else
             }
         </tbody>
     </table>
-
+    
     <button class="btn btn-primary" @onclick="PreviousPage">Prev</button>
     <span>@currentPage</span>
     <button class="btn btn-primary" @onclick="NextPage">Next</button>

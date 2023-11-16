@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 
 namespace pamiw_pwa.Services;
 
-public class AuthorService
+public class AuthorService : IAuthorService
 {
     private readonly HttpClient _httpClient;
 

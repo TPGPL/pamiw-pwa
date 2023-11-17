@@ -8,7 +8,7 @@
 
 @if (books is null)
 {
-    <p>Loading data...</p>
+    <p>@message</p>
 }
 else if (!books.Any())
 {
@@ -68,6 +68,7 @@ else
     private readonly int dataPerPage = 10;
     private int currentPage = 1;
     private int totalPages;
+    private string? message = "Loading...";
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,8 +79,9 @@ else
     {
         var response = await service.GetBooksAsync();
 
-        if (response is null || !response.Success)
+        if (!response.Success)
         {
+            message = response.Message;
             return null;
         }
 
@@ -97,7 +99,7 @@ else
             totalPages--;
         }
 
-        if (currentPage > totalPages)
+        while (currentPage > totalPages)
         {
             currentPage--;
         }

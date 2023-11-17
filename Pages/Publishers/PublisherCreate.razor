@@ -8,18 +8,27 @@
 
 @if (publisher is not null)
 {
+    @if (message is not null)
+    {
+        <p>Error: @message</p>
+    }
+
     <PublisherForm publisher="publisher" OnValidSubmit="HandleSubmit" />
-} else
-{
-    <p>How</p>
 }
 
 @code {
     private Publisher publisher = new Publisher();
+    private string? message;
 
     public async Task HandleSubmit()
     {
-        await service.CreatePublisherAsync(publisher);
+        var response = await service.CreatePublisherAsync(publisher);
+
+        if (!response.Success)
+        {
+            message = response.Message;
+            return;
+        }
 
         manager.NavigateTo("/publishers");
     }

@@ -8,9 +8,15 @@
 
 @if (book is null)
 {
-    <p>Loading...</p>
-} else
+    <p>@message</p>
+}
+else
 {
+    @if (updateMessage is not null)
+    {
+        <p>Error: @updateMessage</p>
+    }
+
     <BookForm book="book" OnValidSubmit="HandleSubmit" />
 }
 
@@ -18,21 +24,36 @@
     [Parameter]
     public int Id { get; set; }
     private Book? book;
+    private String? message = "Loading...";
+    private String? updateMessage;
 
     protected override async Task OnInitializedAsync()
     {
         var response = await service.GetBookAsync(Id);
 
-        if (response is not null && response.Success)
+        if (!response.Success)
         {
-            book = response.Data;
+            message = response.Message;
+            return;
         }
+
+        book = response.Data;
     }
 
     public async Task HandleSubmit()
     {
-        if (book is not null)
-            await service.UpdateBookAsync(Id, book);
+        if (book is null)
+        {
+            return;
+        }
+
+        var response = await service.UpdateBookAsync(Id, book);
+
+        if (!response.Success)
+        {
+            updateMessage = response.Message;
+            return;
+        }
 
         navManager.NavigateTo("/books");
     }

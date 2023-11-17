@@ -8,18 +8,26 @@
 
 @if (book is not null)
 {
-    <BookForm book="book" OnValidSubmit="HandleSubmit" />
-} else
-{
-    <p>How</p>
-}
+    @if (message is not null)
+    {
+        <p>Error: @message</p>    
+    }
 
+    <BookForm book="book" OnValidSubmit="HandleSubmit" />
+}
 @code {
     private Book book = new Book();
+    private string? message;
 
     public async Task HandleSubmit()
     {
-        await service.CreateBookAsync(book);
+        var response = await service.CreateBookAsync(book);
+
+        if (!response.Success)
+        {
+            message = response.Message;
+            return;
+        }
 
         manager.NavigateTo("/books");
     }

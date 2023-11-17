@@ -8,9 +8,15 @@
 
 @if (publisher is null)
 {
-    <p>Loading...</p>
-} else
+    <p>@message</p>
+}
+else
 {
+    @if (updateMessage is not null)
+    {
+        <p>Error: @updateMessage</p>
+    }
+
     <PublisherForm publisher="publisher" OnValidSubmit="HandleSubmit" />
 }
 
@@ -18,21 +24,36 @@
     [Parameter]
     public int Id { get; set; }
     private Publisher? publisher;
+    private string? message = "Loading...";
+    private string? updateMessage;
 
     protected override async Task OnInitializedAsync()
     {
         var response = await service.GetPublisherAsync(Id);
 
-        if (response is not null && response.Success)
+        if (!response.Success)
         {
-            publisher = response.Data;
+            message = response.Message;
+            return;
         }
+
+        publisher = response.Data;
     }
 
     public async Task HandleSubmit()
     {
-        if (publisher is not null)
-            await service.UpdatePublisherAsync(Id, publisher);
+        if (publisher is null)
+        {
+            return;
+        }
+
+        var response = await service.UpdatePublisherAsync(Id, publisher);
+
+        if (!response.Success)
+        {
+            updateMessage = response.Message;
+            return;
+        }
 
         navManager.NavigateTo("/publishers");
     }

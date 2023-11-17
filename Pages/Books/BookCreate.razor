@@ -10,7 +10,7 @@
 {
     @if (message is not null)
     {
-        <p>Error: @message</p>    
+        <p class="alert alert-danger">Error: @message</p>
     }
 
     <BookForm book="book" OnValidSubmit="HandleSubmit" />

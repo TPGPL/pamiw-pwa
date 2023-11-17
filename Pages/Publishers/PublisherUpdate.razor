@@ -14,7 +14,7 @@ else
 {
     @if (updateMessage is not null)
     {
-        <p>Error: @updateMessage</p>
+        <p class="alert alert-danger">Error: @updateMessage</p>
     }
 
     <PublisherForm publisher="publisher" OnValidSubmit="HandleSubmit" />

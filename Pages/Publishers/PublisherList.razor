@@ -39,10 +39,18 @@ else
             }
         </tbody>
     </table>
-    
-    <button class="btn btn-primary" @onclick="PreviousPage">Prev</button>
-    <span>@currentPage</span>
-    <button class="btn btn-primary" @onclick="NextPage">Next</button>
+
+    <ul class="pagination">
+        <li class="page-item">
+            <button class="page-link" @onclick="PreviousPage">Prev</button>
+        </li>
+        <li class="page-item active">
+            <span class="page-link">@currentPage</span>
+        </li>
+        <li class="page-item">
+            <button class="page-link" @onclick="NextPage">Next</button>
+        </li>
+    </ul>
 }
 
 @code {

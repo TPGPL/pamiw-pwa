@@ -14,70 +14,125 @@ public class PublisherService : IPublisherService
 
     public async Task<ServiceResponse<List<Publisher>>> GetPublishersAsync()
     {
-        var response = await _httpClient.GetAsync("publishers");
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            return new ServiceResponse<List<Publisher>>
+            var response = await _httpClient.GetAsync("publishers");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ServiceResponse<List<Publisher>>
+                {
+                    Success = false,
+                    Message = "HTTP Request failed."
+                };
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Publisher>>>()
+                ?? new ServiceResponse<List<Publisher>>() { Success = false, Message = "Failed to read data." };
+
+            result.Success = result.Success && result.Data is not null;
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<List<Publisher>>()
             {
                 Success = false,
-                Message = "HTTP Request failed"
+                Message = ex.Message ?? "Unknown error occurred."
             };
         }
-
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Publisher>>>()
-            ?? new ServiceResponse<List<Publisher>>() { Success = false, Message = "Failed to deserialize." };
-
-        result.Success = result.Success && result.Data is not null;
-
-        return result;
     }
 
     public async Task<ServiceResponse<Publisher>> GetPublisherAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"publishers/{id}");
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            return new ServiceResponse<Publisher>
+            var response = await _httpClient.GetAsync($"publishers/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ServiceResponse<Publisher>
+                {
+                    Success = false,
+                    Message = "HTTP Request failed."
+                };
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
+                ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to read data." };
+
+            result.Success = result.Success && result.Data is not null;
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Publisher>()
             {
                 Success = false,
-                Message = "HTTP Request failed"
+                Message = ex.Message ?? "Unknown error occurred."
             };
         }
-
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
-            ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
-
-        result.Success = result.Success && result.Data is not null;
-
-        return result;
     }
 
     public async Task<ServiceResponse<Publisher>> UpdatePublisherAsync(int id, Publisher author)
     {
-        var response = await _httpClient.PutAsJsonAsync($"publishers/{id}", author);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
-            ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
+        try
+        {
+            var response = await _httpClient.PutAsJsonAsync($"publishers/{id}", author);
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
+                ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to read data." };
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Publisher>()
+            {
+                Success = false,
+                Message = ex.Message ?? "Unknown error occurred."
+            };
+        }
     }
 
     public async Task<ServiceResponse<Publisher>> CreatePublisherAsync(Publisher author)
     {
-        var response = await _httpClient.PostAsJsonAsync($"publishers", author);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
-            ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"publishers", author);
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
+                ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to read data." };
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Publisher>()
+            {
+                Success = false,
+                Message = ex.Message ?? "Unknown error occurred."
+            };
+        }
     }
 
     public async Task<ServiceResponse<Publisher>> DeletePublisherAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"publishers/{id}");
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
-            ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to deserialize" };
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"publishers/{id}");
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Publisher>>()
+                ?? new ServiceResponse<Publisher>() { Success = false, Message = "Failed to read data." };
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Publisher>()
+            {
+                Success = false,
+                Message = ex.Message ?? "Unknown error occurred."
+            };
+        }
     }
 }

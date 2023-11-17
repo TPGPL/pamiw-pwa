@@ -23,71 +23,116 @@ public class AuthorService : IAuthorService
                 return new ServiceResponse<List<Author>>
                 {
                     Success = false,
-                    Message = "HTTP Request failed"
+                    Message = "HTTP Request failed."
                 };
             }
 
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Author>>>()
-                ?? new ServiceResponse<List<Author>>() { Success = false, Message = "Failed to deserialize." };
+                ?? new ServiceResponse<List<Author>>() { Success = false, Message = "Failed to read data." };
 
             result.Success = result.Success && result.Data is not null;
 
             return result;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return new ServiceResponse<List<Author>>()
             {
                 Success = false,
-                Message = ex.Message
+                Message = ex.Message ?? "Unknown error occured."
             };
         }
     }
 
     public async Task<ServiceResponse<Author>> GetAuthorAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"authors/{id}");
+        try
+        {
+            var response = await _httpClient.GetAsync($"authors/{id}");
 
-        if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
+            {
+                return new ServiceResponse<Author>
+                {
+                    Success = false,
+                    Message = "HTTP Request failed."
+                };
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
+                ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };
+
+            result.Success = result.Success && result.Data is not null;
+
+            return result;
+        }
+        catch (Exception ex)
         {
             return new ServiceResponse<Author>
             {
                 Success = false,
-                Message = "HTTP Request failed"
+                Message = ex.Message ?? "Unknown error occurred."
             };
         }
-
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
-            ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
-
-        result.Success = result.Success && result.Data is not null;
-
-        return result;
     }
 
     public async Task<ServiceResponse<Author>> UpdateAuthorAsync(int id, Author author)
     {
-        var response = await _httpClient.PutAsJsonAsync($"authors/{id}", author);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
-            ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
+        try
+        {
+            var response = await _httpClient.PutAsJsonAsync($"authors/{id}", author);
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
+                ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Author>
+            {
+                Success = false,
+                Message = ex.Message ?? "Unknown error occurred."
+            };
+        }
     }
 
     public async Task<ServiceResponse<Author>> CreateAuthorAsync(Author author)
     {
-        var response = await _httpClient.PostAsJsonAsync($"authors", author);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
-            ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"authors", author);
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
+                ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Author>
+            {
+                Success = false,
+                Message = ex.Message ?? "Unknown error occurred."
+            };
+        }
     }
 
     public async Task<ServiceResponse<Author>> DeleteAuthorAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"authors/{id}");
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
-            ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to deserialize" };
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"authors/{id}");
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
+                ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse<Author>
+            {
+                Success = false,
+                Message = ex.Message ?? "Unknown error occurred."
+            };
+        }
     }
 }

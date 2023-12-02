@@ -16,7 +16,9 @@ public class TokenService : ITokenService
     {
         if (await _localStorageService.ContainKeyAsync("jwt"))
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsStringAsync("jwt"));
+            var token = await _localStorageService.GetItemAsStringAsync("jwt");
+            token = token.Substring(1, token.Length-2);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
     }
 }

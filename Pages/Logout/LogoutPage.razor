@@ -1,0 +1,13 @@
+﻿@page "/logout"
+@inject IAuthService service
+
+<h3>Logout</h3>
+
+<p>User logged out successfully.</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await service.Logout();
+    }
+}

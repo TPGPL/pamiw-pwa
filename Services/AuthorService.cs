@@ -6,16 +6,19 @@ namespace pamiw_pwa.Services;
 public class AuthorService : IAuthorService
 {
     private readonly HttpClient _httpClient;
+    private readonly ITokenService _tokenService;
 
-    public AuthorService(HttpClient httpClient)
+    public AuthorService(HttpClient httpClient, ITokenService tokenService)
     {
         _httpClient = httpClient;
+        _tokenService = tokenService;
     }
 
     public async Task<ServiceResponse<List<Author>>> GetAuthorsAsync()
     {
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.GetAsync("authors");
 
             if (!response.IsSuccessStatusCode)
@@ -46,6 +49,8 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> GetAuthorAsync(int id)
     {
+        await _tokenService.AddTokenToClient(_httpClient);
+
         try
         {
             var response = await _httpClient.GetAsync($"authors/{id}");
@@ -78,6 +83,8 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> UpdateAuthorAsync(int id, Author author)
     {
+        await _tokenService.AddTokenToClient(_httpClient);
+
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"authors/{id}", author);
@@ -98,6 +105,8 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> CreateAuthorAsync(Author author)
     {
+        await _tokenService.AddTokenToClient(_httpClient);
+
         try
         {
             var response = await _httpClient.PostAsJsonAsync($"authors", author);
@@ -118,6 +127,8 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> DeleteAuthorAsync(int id)
     {
+        await _tokenService.AddTokenToClient(_httpClient);
+
         try
         {
             var response = await _httpClient.DeleteAsync($"authors/{id}");

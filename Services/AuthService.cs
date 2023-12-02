@@ -44,7 +44,7 @@ public class AuthService : IAuthService
                 await _localStorageService.SetItemAsync("jwt", token);
                 _provider.SetUserAuthenticated(user.Username);
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                _authState.SetAuth(true);
+                _authState.SetAuth(true, user.Username);
             }
 
 

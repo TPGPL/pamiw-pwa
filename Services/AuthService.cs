@@ -84,7 +84,7 @@ public class AuthService : IAuthService
             return new ServiceResponse<string>()
             {
                 Success = true,
-                Data = mess
+                Message = mess
             };
         }
         catch (Exception ex)

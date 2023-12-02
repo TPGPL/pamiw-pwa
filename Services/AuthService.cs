@@ -8,16 +8,17 @@ namespace pamiw_pwa.Services;
 
 public class AuthService : IAuthService
 {
-    public bool IsAuthenticated { get; private set; }
+    private AuthState _authState;
     private HttpClient _httpClient;
     private ILocalStorageService _localStorageService;
     private JwtAuthenticationStateProvider _provider;
 
-    public AuthService(HttpClient httpClient, JwtAuthenticationStateProvider provider, ILocalStorageService localStorageService)
+    public AuthService(HttpClient httpClient, JwtAuthenticationStateProvider provider, ILocalStorageService localStorageService, AuthState authState)
     {
         _httpClient = httpClient;
         _provider = provider;
         _localStorageService = localStorageService;
+        _authState = authState;
     }
 
     public async Task<ServiceResponse<string>> LoginAsync(UserLogin user)
@@ -43,7 +44,7 @@ public class AuthService : IAuthService
                 await _localStorageService.SetItemAsync("jwt", token);
                 _provider.SetUserAuthenticated(user.Username);
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                IsAuthenticated = true;
+                _authState.SetAuth(true);
             }
 
 
@@ -102,6 +103,6 @@ public class AuthService : IAuthService
         await _localStorageService.RemoveItemAsync("jwt");
         _provider.SetUserLoggedOut();
         _httpClient.DefaultRequestHeaders.Authorization = null;
-        IsAuthenticated = false;
+        _authState.SetAuth(false);
     }
 }

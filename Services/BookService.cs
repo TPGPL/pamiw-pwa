@@ -6,16 +6,19 @@ namespace pamiw_pwa.Services;
 public class BookService : IBookService
 {
     private readonly HttpClient _httpClient;
+    private readonly ITokenService _tokenService;
 
-    public BookService(HttpClient httpClient)
+    public BookService(HttpClient httpClient, ITokenService tokenService)
     {
         _httpClient = httpClient;
+        _tokenService = tokenService;
     }
 
     public async Task<ServiceResponse<List<Book>>> GetBooksAsync()
     {
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.GetAsync("books");
 
             if (!response.IsSuccessStatusCode)
@@ -48,6 +51,7 @@ public class BookService : IBookService
     {
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.GetAsync($"books/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -80,6 +84,7 @@ public class BookService : IBookService
     {
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.PutAsJsonAsync($"books/{id}", Book);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Book>>()
                 ?? new ServiceResponse<Book>() { Success = false, Message = "Failed to read data." };
@@ -100,6 +105,7 @@ public class BookService : IBookService
     {
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.PostAsJsonAsync($"books", Book);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Book>>()
                 ?? new ServiceResponse<Book>() { Success = false, Message = "Failed to read data." };
@@ -120,6 +126,7 @@ public class BookService : IBookService
     {
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.DeleteAsync($"books/{id}");
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Book>>()
                 ?? new ServiceResponse<Book>() { Success = false, Message = "Failed to read data." };

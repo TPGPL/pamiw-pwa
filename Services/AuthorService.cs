@@ -49,10 +49,9 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> GetAuthorAsync(int id)
     {
-        await _tokenService.AddTokenToClient(_httpClient);
-
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.GetAsync($"authors/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -83,10 +82,9 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> UpdateAuthorAsync(int id, Author author)
     {
-        await _tokenService.AddTokenToClient(_httpClient);
-
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.PutAsJsonAsync($"authors/{id}", author);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
                 ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };
@@ -105,10 +103,9 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> CreateAuthorAsync(Author author)
     {
-        await _tokenService.AddTokenToClient(_httpClient);
-
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.PostAsJsonAsync($"authors", author);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
                 ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };
@@ -127,10 +124,9 @@ public class AuthorService : IAuthorService
 
     public async Task<ServiceResponse<Author>> DeleteAuthorAsync(int id)
     {
-        await _tokenService.AddTokenToClient(_httpClient);
-
         try
         {
+            await _tokenService.AddTokenToClient(_httpClient);
             var response = await _httpClient.DeleteAsync($"authors/{id}");
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Author>>()
                 ?? new ServiceResponse<Author>() { Success = false, Message = "Failed to read data." };

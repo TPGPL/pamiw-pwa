@@ -23,5 +23,6 @@ builder.Services.AddAuthorizationCore(conf =>
 {
     conf.AddPolicy(Policies.IsUserLog, Policies.IsUserLogged());
 });
+builder.Services.AddSingleton<AuthState>();
 
 await builder.Build().RunAsync();

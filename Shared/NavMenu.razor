@@ -1,4 +1,4 @@
-﻿@inject IAuthService service;
+﻿@inject AuthState AuthState;
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -16,7 +16,7 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        @if (service.IsAuthenticated)
+        @if (AuthState.IsAuthenticated)
         {
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="books">
@@ -45,5 +45,15 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        AuthState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnChange -= StateHasChanged;
     }
 }
